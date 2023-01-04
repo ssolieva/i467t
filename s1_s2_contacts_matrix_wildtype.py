@@ -45,6 +45,7 @@ def generate_binarized_contacts(traj_list, top_file, atom_indices, cutoff):
         dists_bin_all.append((dists < cutoff).astype(np.int_))# cutoff in nm 
         pair_index_all.append(pair_index)
 
+print('test')
 
 # create pairs
 ## define switch 1 and switch 2, then combine the residue lists.
