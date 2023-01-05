@@ -1,8 +1,8 @@
 # the following lists should be set up like: (wildtype, I467T)
-top_files = ["/Users/ssolieva/Desktop/bowman_lab/MSM_I467T/trajectories_wt/myh7-5n6a-holo-prot-masses.pdb",
-             "/Users/ssolieva/Desktop/bowman_lab/MSM_I467T/trajectories/myh7-5n6a-i467t-adp-phos-prot-masses.pdb"]
-path_to_traj_lists = ["/Users/ssolieva/Desktop/bowman_lab/MSM_I467T/trajectories_wt/traj_list.txt",
-                      "/Users/ssolieva/Desktop/bowman_lab/MSM_I467T/trajectories/traj_list.txt"]
+top_files = ["/home/artur/bowmore-backup/i467t/wt-trajectories/myh7-5n6a-holo-prot-masses.pdb",
+             "/home/artur/bowmore-backup/i467t/i467t-trajectories/myh7-5n6a-i467t-adp-phos-prot-masses.pdb"]
+path_to_traj_lists = ["wt-trajectories.txt",
+                      "i467t-trajectories.txt"]
 
 import mdtraj as md
 import numpy as np
@@ -81,21 +81,21 @@ path_to_traj_list = path_to_traj_lists[0]
 
 set1_name = "S2"
 set1 = np.arange(463,473)
-set2_name = "relay helix"
+set2_name = "relay_helix"
 set2 = np.arange(473,490)
 output_file1_name = f"{set1_name}_{set2_name}_binarized_distances_wildtype"
 output_file2_name = f"{set1_name}_{set2_name}_averaged_binarized_distances_wildtype"
 matrix_name = f"{set1_name}_{set2_name}_wildtype"
 any_pairs(set1, set2, set1_name, set2_name, top_file, path_to_traj_list, output_file1_name, output_file2_name, matrix_name)
 
-set1_name = "S1"
-set1 = np.arange(232,245)
-set2_name = "S2"
-set2 = np.arange(463,473)
-output_file1_name = f"{set1_name}_{set2_name}_binarized_distances_wildtype"
-output_file2_name = f"{set1_name}_{set2_name}_averaged_binarized_distances_wildtype"
-matrix_name = f"{set1_name}_{set2_name}_wildtype"
-any_pairs(set1, set2, set1_name, set2_name, top_file, path_to_traj_list, output_file1_name, output_file2_name, matrix_name)
+# set1_name = "S1"
+# set1 = np.arange(232,245)
+# set2_name = "S2"
+# set2 = np.arange(463,473)
+# output_file1_name = f"{set1_name}_{set2_name}_binarized_distances_wildtype"
+# output_file2_name = f"{set1_name}_{set2_name}_averaged_binarized_distances_wildtype"
+# matrix_name = f"{set1_name}_{set2_name}_wildtype"
+# any_pairs(set1, set2, set1_name, set2_name, top_file, path_to_traj_list, output_file1_name, output_file2_name, matrix_name)
 
 # MUTANT:
 top_file = top_files[1]
@@ -103,18 +103,18 @@ path_to_traj_list = path_to_traj_lists[1]
 
 set1_name = "S2"
 set1 = np.arange(463,473)
-set2_name = "relay helix"
+set2_name = "relay_helix"
 set2 = np.arange(473,490)
 output_file1_name = f"{set1_name}_{set2_name}_binarized_distances_I467T"
 output_file2_name = f"{set1_name}_{set2_name}_averaged_binarized_distances_I467T"
 matrix_name = f"{set1_name}_{set2_name}_I467T"
 any_pairs(set1, set2, set1_name, set2_name, top_file, path_to_traj_list, output_file1_name, output_file2_name, matrix_name)
 
-set1_name = "S1"
-set1 = np.arange(232,245)
-set2_name = "S2"
-set2 = np.arange(463,473)
-output_file1_name = f"{set1_name}_{set2_name}_binarized_distances_I467T"
-output_file2_name = f"{set1_name}_{set2_name}_averaged_binarized_distances_I467T"
-matrix_name = f"{set1_name}_{set2_name}_I467T"
-any_pairs(set1, set2, set1_name, set2_name, top_file, path_to_traj_list, output_file1_name, output_file2_name, matrix_name)
+# set1_name = "S1"
+# set1 = np.arange(232,245)
+# set2_name = "S2"
+# set2 = np.arange(463,473)
+# output_file1_name = f"{set1_name}_{set2_name}_binarized_distances_I467T"
+# output_file2_name = f"{set1_name}_{set2_name}_averaged_binarized_distances_I467T"
+# matrix_name = f"{set1_name}_{set2_name}_I467T"
+# any_pairs(set1, set2, set1_name, set2_name, top_file, path_to_traj_list, output_file1_name, output_file2_name, matrix_name)

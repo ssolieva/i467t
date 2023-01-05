@@ -4,28 +4,26 @@ import itertools
 import matplotlib.pyplot as plt
 
 # the following lists should be set up like: (wildtype, I467T)
-top_files = ["/Users/ssolieva/Desktop/bowman_lab/MSM_I467T/trajectories_wt/myh7-5n6a-holo-prot-masses.pdb",
-             "/Users/ssolieva/Desktop/bowman_lab/MSM_I467T/trajectories/myh7-5n6a-i467t-adp-phos-prot-masses.pdb"]
-path_to_traj_lists = ["/Users/ssolieva/Desktop/bowman_lab/MSM_I467T/trajectories_wt/traj_list.txt",
-                      "/Users/ssolieva/Desktop/bowman_lab/MSM_I467T/trajectories/traj_list.txt"]
+top_files = ["/home/artur/bowmore-backup/i467t/wt-trajectories/myh7-5n6a-holo-prot-masses.pdb",
+             "/home/artur/bowmore-backup/i467t/i467t-trajectories/myh7-5n6a-i467t-adp-phos-prot-masses.pdb"]
+path_to_traj_lists = ["wt-trajectories.txt",
+                      "i467t-trajectories.txt"]
 
-def generate_neighbor_atom_ind(top_file):
+def generate_neighbor_atom_ind(top_file, query_residue, cutoff=0.5):
     '''this will take a top_file + one residue and output neighboring atom indices for that residues.
         resis is a list of residue numbers'''
     topology = md.load(top_file)
-    query_indices = topology.top.select('residue 467')
+    query_indices = topology.top.select(f'residue {query_residue}')
     haystack_indices = topology.top.select('protein')
-    cutoff = 0.5
-    atom_indices_ = md.compute_neighbors(topology,cutoff, query_indices, haystack_indices)
-    resis =[]
-    for i in atom_indices_[0]:
-        #if int(str(topology.top.atom(i).residue)[-3:]) != 467:
-            #print(int(str(topology.top.atom(i).residue)[-3:]))
-        resis.append(int(str(topology.top.atom(i).residue)[-3:]))
-    unique_resis = np.unique(resis)
+    atom_indices = md.compute_neighbors(topology,cutoff, query_indices, haystack_indices)[0]
+    unique_resis = np.unique(
+        [topology.top.atom(ai).residue.resSeq for ai in atom_indices]
+    )
+    # remove neighbors
+    unique_resis = [r for r in unique_resis if np.abs(r - query_residue) > 1]
     selection_string = ' or '.join(f'residue {r}' for r in unique_resis)
     atom_indices = topology.top.select(selection_string)
-    return atom_indices,unique_resis
+    return atom_indices, unique_resis
 
 def generate_neighbor_binarized_contacts(traj_list, top_file, atom_indices, cutoff):
     '''this will load trajs, compute closest heavy atom distances,
@@ -48,11 +46,12 @@ def generate_neighbor_binarized_contacts(traj_list, top_file, atom_indices, cuto
     return dists_bin_all
 
 def neighbors_wt(set1, set2, set1_name, set2_name, top_file, path_to_traj_list, output_file1_name, output_file2_name, matrix_name):
+    assert len(set1) == 1, 'set 1 is more than 1 residue, we should only be computing neighbors'
     # import traj_list
     with open(path_to_traj_list, "r") as fd:
         traj_list = fd.read().splitlines()
     # get atom indices
-    atom_indices,unique_resis= generate_neighbor_atom_ind(top_file)
+    atom_indices,unique_resis= generate_neighbor_atom_ind(top_file, set1[0])
     index_value_467 = []
     for i in range(len(unique_resis)):
         if unique_resis[i] == 467:
@@ -81,6 +80,7 @@ def neighbors_wt(set1, set2, set1_name, set2_name, top_file, path_to_traj_list, 
     plt.savefig(f"{matrix_name}")
     
 def neighbors_mt(set1, set2, set1_name, set2_name, top_file, path_to_traj_list, output_file1_name, output_file2_name, matrix_name, top_file_wt):
+    assert len(set1) == 1, 'set 1 is more than 1 residue, we should only be computing neighbors'
     # import traj_list
     with open(path_to_traj_list, "r") as fd:
         traj_list = fd.read().splitlines()
@@ -117,8 +117,8 @@ def neighbors_mt(set1, set2, set1_name, set2_name, top_file, path_to_traj_list, 
 top_file = top_files[0]
 path_to_traj_list = path_to_traj_lists[0]
 
-set1 = unique_resis[index_value_467]
-set2 = unique_resis
+set1 = [467]
+set2 = generate_neighbor_atom_ind(top_file, 467)[1]
 set1_name = "467"
 set2_name = "neighbors"
 
@@ -134,8 +134,8 @@ top_file_wt = top_files[0]
 top_file = top_files[1]
 path_to_traj_list = path_to_traj_lists[1]
 
-set1 = unique_resis[index_value_467]
-set2 = unique_resis
+set1 = [467]
+set2 = generate_neighbor_atom_ind(top_file_wt, 467)[1]
 set1_name = "467"
 set2_name = "neighbors"
 
