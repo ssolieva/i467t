@@ -69,7 +69,7 @@ def generate_binarized_contacts(traj_list, top_file, atom_indices, set1, set2, c
         dists_bin_all.append((dists < cutoff).astype(np.bool_)) # binarize first, then save
     return dists_bin_all
 
-def any_pairs(set1, set2, set_name, top_file, top_file_wt, path_to_traj_list, system):
+def any_pairs(set1, set2, set_name, top_file, top_file_wt, path_to_traj_list, system, plot_size=(8,4)):
     ''' If neighbors = True, then set2 needs to be
             set2 = [a for a in generate_neighbor_atom_ind(top_file_wt, top_file, query_residue)[1] if a != query_residue]
             Also, need to specify a query residue.
@@ -92,7 +92,7 @@ def any_pairs(set1, set2, set_name, top_file, top_file_wt, path_to_traj_list, sy
     np.save(f"{set_name[0]}_{set_name[1]}_averaged_binarized_distances_{system}",averaged_dists_bin) # save the averaged data
     shape = ( len(set1), len(set2) ) # reshape data into matrix form and then graph the matrix
     reshaped_dists = averaged_dists_bin.reshape( shape )
-    fig, ax = plt.subplots(figsize=(len(set1), len(set2)))
+    fig, ax = plt.subplots(figsize=plot_size)
     ax.matshow(reshaped_dists, vmin=0, vmax=1) # same colorbar
     for (i, j), z in np.ndenumerate(reshaped_dists):
         ax.text(j, i, '{:0.2f}'.format(z), ha='center', va='center',fontsize=8)
@@ -103,8 +103,9 @@ def any_pairs(set1, set2, set_name, top_file, top_file_wt, path_to_traj_list, sy
     ax.set_ylabel(f"{set_name[0]}", fontsize=14)
     ax.set_xlabel(f"{set_name[1]}", fontsize=14)
     ax.set_title(f"{set_name[0]}_{set_name[1]}_{system}")
-    fig.tight_layout()
-    fig.savefig(f"{set_name[0]}_{set_name[1]}_{system}.pdf", dpi=300, transparent=True)
+    plt.tight_layout()
+    plt.savefig(f"{set_name[0]}_{set_name[1]}_{system}.pdf", dpi=300, transparent=True)
+
 
 # this applies to both systems:
 top_file_wt = top_files[0]
@@ -125,17 +126,23 @@ system = 'wildtype'
 #  set2 = np.arange(463,473)
 #  any_pairs(set1, set2, set_name, top_file, top_file_wt, path_to_traj_list, system, query_residue=False, neighbors=False)
 #  # query_residue - neighbors
-query_residue = 467
-set_name = [f"{query_residue}", "neighbors"] #[set1, set2]
-set1 = [query_residue]
-set2 = generate_neighbor_atom_ind(top_file_wt, top_file, query_residue)
-any_pairs(set1, set2, set_name, top_file, top_file_wt, path_to_traj_list, system)
+#  query_residue = 467
+#  set_name = [f"{query_residue}", "neighbors"] #[set1, set2]
+#  set1 = [query_residue]
+#  set2 = generate_neighbor_atom_ind(top_file_wt, top_file, query_residue)
+#  any_pairs(set1, set2, set_name, top_file, top_file_wt, path_to_traj_list, system)
+#  
+#  query_residue = 787
+#  set_name = [f"{query_residue}", "neighbors"] #[set1, set2]
+#  set1 = [query_residue]
+#  set2 = generate_neighbor_atom_ind(top_file_wt, top_file, query_residue, cutoff=1)
+#  any_pairs(set1, set2, set_name, top_file, top_file_wt, path_to_traj_list, system, plot_size=(20,4))
 
-query_residue = 787
+query_residue = 786
 set_name = [f"{query_residue}", "neighbors"] #[set1, set2]
 set1 = [query_residue]
-set2 = generate_neighbor_atom_ind(top_file_wt, top_file, query_residue, cutoff=1)
-any_pairs(set1, set2, set_name, top_file, top_file_wt, path_to_traj_list, system)
+set2 = generate_neighbor_atom_ind(top_file_wt, top_file, query_residue, cutoff=0.5)
+any_pairs(set1, set2, set_name, top_file, top_file_wt, path_to_traj_list, system, plot_size=(20,4))
 
 # MUTANT:
 top_file = top_files[1]
@@ -153,14 +160,23 @@ system = 'I467T'
 #  any_pairs(set1, set2, set_name, top_file, top_file_wt, path_to_traj_list, system, query_residue=False, neighbors=False)
 #  # query_residue - neighbors
 
-query_residue = 467
-set_name = [f"{query_residue}", "neighbors"] #[set1, set2]
-set1 = [query_residue]
-set2 = generate_neighbor_atom_ind(top_file_wt, top_file, query_residue)
-any_pairs(set1, set2, set_name, top_file, top_file_wt, path_to_traj_list, system)
+#  query_residue = 467
+#  set_name = [f"{query_residue}", "neighbors"] #[set1, set2]
+#  set1 = [query_residue]
+#  set2 = generate_neighbor_atom_ind(top_file_wt, top_file, query_residue)
+#  any_pairs(set1, set2, set_name, top_file, top_file_wt, path_to_traj_list, system)
+#  
+#  query_residue = 787 # phosphate
+#  set_name = [f"{query_residue}", "neighbors"] #[set1, set2]
+#  set1 = [query_residue]
+#  set2 = generate_neighbor_atom_ind(top_file_wt, top_file, query_residue, cutoff=1)
+#  any_pairs(set1, set2, set_name, top_file, top_file_wt, path_to_traj_list, system)
 
-query_residue = 787 # phosphate
+query_residue = 786
 set_name = [f"{query_residue}", "neighbors"] #[set1, set2]
 set1 = [query_residue]
-set2 = generate_neighbor_atom_ind(top_file_wt, top_file, query_residue, cutoff=1)
-any_pairs(set1, set2, set_name, top_file, top_file_wt, path_to_traj_list, system)
+set2 = generate_neighbor_atom_ind(top_file_wt, top_file, query_residue, cutoff=0.5)
+any_pairs(set1, set2, set_name, top_file, top_file_wt, path_to_traj_list, system, plot_size=(20,4))
+
+
+
